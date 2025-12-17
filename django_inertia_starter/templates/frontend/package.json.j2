@@ -1,0 +1,41 @@
+{
+  "name": "{{ project_name }}-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"{% if use_typescript %},
+    "type-check": "tsc --noEmit"
+{% endif %}
+  },
+  "dependencies": {
+{% if frontend == 'react' %}
+    "@inertiajs/react": "^2.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+{% else %}
+    "@inertiajs/vue3": "^1.2.0",
+    "vue": "^3.5.12",
+{% endif %}
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^25.0.3",
+{% if frontend == 'react' %}
+    "@vitejs/plugin-react": "^4.3.3",
+{% else %}
+    "@vitejs/plugin-vue": "^5.2.0",
+{% endif %}
+    "postcss": "^8.5.6",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.0"{% if frontend == 'react' and use_typescript %},
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1"
+{% endif %}{% if frontend == 'vue3' and use_typescript %},
+    "vue-tsc": "^2.1.10"
+{% endif %}
+  }
+}

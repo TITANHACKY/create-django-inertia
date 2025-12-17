@@ -1,0 +1,49 @@
+import { resolve } from "path";
+{% if frontend == 'react' %}
+import react from "@vitejs/plugin-react";
+{% else %}
+import vue from "@vitejs/plugin-vue";
+{% endif %}
+
+export default {
+    plugins: [
+{% if frontend == 'react' %}
+        react()
+{% else %}
+        vue()
+{% endif %}
+    ],
+    root: resolve("./static"),
+    base: "/static/",
+    resolve: {
+        extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
+        alias: {
+            "@": resolve("./static/"),
+            "/static": resolve("./static"),
+        },
+    },
+    server: {
+        host: "localhost",
+        port: 3000,
+        open: false,
+        watch: {
+            usePolling: true,
+            disableGlobbing: false,
+        },
+        origin: "http://localhost:3000",
+    },
+    build: {
+        outDir: resolve("./static/dist"),
+        assetsDir: "",
+        manifest: "manifest.json",
+        emptyOutDir: true,
+        rollupOptions: {
+            input: {
+                main: resolve("./static/main.{% if use_typescript %}{% if frontend == 'react' %}tsx{% else %}ts{% endif %}{% else %}{% if frontend == 'react' %}jsx{% else %}js{% endif %}{% endif %}"),
+            },
+            output: {
+                chunkFileNames: undefined,
+            },
+        },
+    },
+};

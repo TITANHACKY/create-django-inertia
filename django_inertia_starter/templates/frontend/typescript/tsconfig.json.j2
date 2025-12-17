@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true{% if frontend == 'react' %},
+    "jsx": "react-jsx"{% endif %}
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    /* Path mapping */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }{% if frontend == 'vue3' %},
+
+    /* Vue specific */
+    "types": ["vite/client"]
+{% endif %}
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts"{% if frontend == 'react' %}, "src/**/*.tsx"{% endif %}{% if frontend == 'vue3' %}, "src/**/*.vue"{% endif %}],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

@@ -1,0 +1,14 @@
+from django.shortcuts import render
+from inertia import render as inertia_render
+
+
+def home(request):
+    """
+    Home page view using Inertia.js
+    """
+    return inertia_render(request, 'Home', {
+        'message': 'Welcome to Django + Inertia.js!',
+        'project_name': '{{ project_name }}',
+        'frontend': '{{ frontend }}',
+        'typescript': {{ use_typescript|lower }},
+    })
