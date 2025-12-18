@@ -113,6 +113,10 @@ class FrontendGenerator(BaseGenerator):
                 f"static/pages/home/page.{file_ext}",
             ),
             (
+                "frontend/react/components/ThemeToggle.tsx.j2",
+                f"static/components/ThemeToggle.{file_ext}",
+            ),
+            (
                 "frontend/react/lib/inertia.ts.j2",
                 f"static/lib/inertia.{get_config_extension(self.use_typescript)}",
             ),
@@ -136,6 +140,10 @@ class FrontendGenerator(BaseGenerator):
         vue_files = [
             ("frontend/vue/main.ts.j2", f"static/main.{config_ext}"),
             ("frontend/vue/pages/home/page.vue.j2", f"static/pages/home/page.vue"),
+            (
+                "frontend/vue/components/ThemeToggle.vue.j2",
+                f"static/components/ThemeToggle.vue",
+            ),
             ("frontend/vue/lib/inertia.ts.j2", f"static/lib/inertia.{config_ext}"),
         ]
 

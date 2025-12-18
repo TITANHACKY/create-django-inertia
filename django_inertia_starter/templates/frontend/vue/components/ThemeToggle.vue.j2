@@ -1,0 +1,66 @@
+<template>
+  <button
+    @click="toggleTheme"
+    class="fixed bottom-8 right-8 z-50 inline-flex h-12 w-12 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-lg transition-all hover:bg-accent hover:text-accent-foreground"
+    aria-label="Toggle theme"
+  >
+    <svg v-if="theme === 'light'" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+    </svg>
+    <svg v-else class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+    </svg>
+  </button>
+</template>
+
+{% if use_typescript %}
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+
+const theme = ref<'light' | 'dark'>('light')
+
+onMounted(() => {
+  // Check localStorage or system preference
+  const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+  const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light')
+  
+  theme.value = initialTheme
+  document.documentElement.classList.toggle('dark', initialTheme === 'dark')
+  document.documentElement.classList.toggle('light', initialTheme === 'light')
+})
+
+const toggleTheme = () => {
+  const newTheme = theme.value === 'light' ? 'dark' : 'light'
+  theme.value = newTheme
+  localStorage.setItem('theme', newTheme)
+  document.documentElement.classList.toggle('dark', newTheme === 'dark')
+  document.documentElement.classList.toggle('light', newTheme === 'light')
+}
+</script>
+{% else %}
+<script setup>
+import { ref, onMounted } from 'vue'
+
+const theme = ref('light')
+
+onMounted(() => {
+  // Check localStorage or system preference
+  const savedTheme = localStorage.getItem('theme')
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+  const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light')
+  
+  theme.value = initialTheme
+  document.documentElement.classList.toggle('dark', initialTheme === 'dark')
+  document.documentElement.classList.toggle('light', initialTheme === 'light')
+})
+
+const toggleTheme = () => {
+  const newTheme = theme.value === 'light' ? 'dark' : 'light'
+  theme.value = newTheme
+  localStorage.setItem('theme', newTheme)
+  document.documentElement.classList.toggle('dark', newTheme === 'dark')
+  document.documentElement.classList.toggle('light', newTheme === 'light')
+}
+</script>
+{% endif %}

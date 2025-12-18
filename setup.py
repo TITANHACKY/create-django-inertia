@@ -13,13 +13,13 @@ def read_long_description():
 
 setup(
     name="create-django-inertia",
-    version="1.0.0",
+    version="1.0.2",
     author="Django Inertia Starter Team",
     author_email="contact@create-django-inertia.com",
     description="A CLI tool to quickly scaffold Django + Inertia.js projects",
     long_description=read_long_description(),
     long_description_content_type="text/markdown",
-    url="https://github.com/django-inertia-starter/create-django-inertia",
+    url="https://github.com/TITANHACKY/create-django-inertia",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -59,8 +59,8 @@ setup(
     },
     keywords="django, inertia, inertiajs, react, vue, typescript, javascript, scaffolding, cli",
     project_urls={
-        "Bug Reports": "https://github.com/django-inertia-starter/create-django-inertia/issues",
-        "Source": "https://github.com/django-inertia-starter/create-django-inertia",
-        "Documentation": "https://github.com/django-inertia-starter/create-django-inertia#readme",
+        "Bug Reports": "https://github.com/TITANHACKY/create-django-inertia/issues",
+        "Source": "https://github.com/TITANHACKY/create-django-inertia",
+        "Documentation": "https://github.com/TITANHACKY/create-django-inertia#readme",
     },
 )

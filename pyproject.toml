@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "create-django-inertia"
-version = "1.0.1"
+version = "1.0.2"
 authors = [
     {name = "Django Inertia Starter Team", email = "contact@create-django-inertia.com"},
 ]
