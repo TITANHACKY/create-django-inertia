@@ -59,8 +59,12 @@ def main(ctx, project_name, directory, react, vue, typescript, force, no_install
     elif vue:
         frontend = "vue3"
 
-    return startproject_logic(
-        ctx, project_name, frontend, directory, typescript, force, no_install
+    # ctx.exit, not return: click discards a command's return value, so a bare
+    # return leaves the process exiting 0 even when generation failed.
+    ctx.exit(
+        startproject_logic(
+            ctx, project_name, frontend, directory, typescript, force, no_install
+        )
     )
 
 

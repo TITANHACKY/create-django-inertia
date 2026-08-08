@@ -1,0 +1,76 @@
+// Inertia.js configuration and utilities for Vue 3
+{% if use_typescript %}
+export const inertiaConfig = {
+  title: (title: string) => `${title} - {{ project_name.title() }}`,
+  progress: {
+    color: '#4B5563',
+    showSpinner: true,
+  },
+}
+
+// CSRF token helper
+export function getCSRFToken(): string | null {
+  const token = document.querySelector('meta[name="csrf-token"]')
+  return token ? token.getAttribute('content') : null
+}
+
+// API helpers for making requests with CSRF token
+export const api = {
+  get(url: string) {
+    return fetch(url, {
+      headers: {
+        'X-CSRFToken': getCSRFToken() || '',
+        'Content-Type': 'application/json',
+      },
+    })
+  },
+  
+  post(url: string, data: any) {
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCSRFToken() || '',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+  },
+}
+{% else %}
+export const inertiaConfig = {
+  title: (title) => `${title} - {{ project_name.title() }}`,
+  progress: {
+    color: '#4B5563',
+    showSpinner: true,
+  },
+}
+
+// CSRF token helper
+export function getCSRFToken() {
+  const token = document.querySelector('meta[name="csrf-token"]')
+  return token ? token.getAttribute('content') : null
+}
+
+// API helpers for making requests with CSRF token
+export const api = {
+  get(url) {
+    return fetch(url, {
+      headers: {
+        'X-CSRFToken': getCSRFToken() || '',
+        'Content-Type': 'application/json',
+      },
+    })
+  },
+  
+  post(url, data) {
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCSRFToken() || '',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+  },
+}
+{% endif %}

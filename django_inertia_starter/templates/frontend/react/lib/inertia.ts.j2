@@ -1,0 +1,37 @@
+// Inertia.js configuration and utilities
+export const inertiaConfig = {
+  title: (title{% if use_typescript %}: string{% endif %}) => `${title} - {{ project_name.title() }}`,
+  progress: {
+    color: '#4B5563',
+    showSpinner: true,
+  },
+}
+
+// CSRF token helper
+export function getCSRFToken(){% if use_typescript %}: string | null{% endif %} {
+  const token = document.querySelector('meta[name="csrf-token"]')
+  return token ? token.getAttribute('content') : null
+}
+
+// API helpers for making requests with CSRF token
+export const api = {
+  get(url{% if use_typescript %}: string{% endif %}) {
+    return fetch(url, {
+      headers: {
+        'X-CSRFToken': getCSRFToken() || '',
+        'Content-Type': 'application/json',
+      },
+    })
+  },
+  
+  post(url{% if use_typescript %}: string{% endif %}, data{% if use_typescript %}: any{% endif %}) {
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCSRFToken() || '',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+  },
+}
