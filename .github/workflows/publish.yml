@@ -1,0 +1,72 @@
+name: publish
+
+# Publishes to PyPI with Trusted Publishing (OIDC). No API token is stored
+# anywhere - GitHub proves the workflow's identity to PyPI directly.
+#
+# One-time setup at https://pypi.org/manage/project/create-django-inertia/settings/publishing/
+#   Owner:            TITANHACKY
+#   Repository name:  create-django-inertia
+#   Workflow name:    publish.yml
+#   Environment name: pypi
+#
+# Then either push a vX.Y.Z tag, or run this workflow manually.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - name: Build sdist and wheel
+        run: |
+          pip install build
+          python -m build
+
+      - name: Check the artifacts render on PyPI
+        run: |
+          pip install twine
+          twine check dist/*
+
+      - name: Verify the wheel ships every committed template
+        run: |
+          committed=$(git ls-files 'django_inertia_starter/templates/*' | wc -l)
+          packaged=$(python - <<'PY'
+          import glob, zipfile
+          whl = glob.glob("dist/*.whl")[0]
+          names = zipfile.ZipFile(whl).namelist()
+          print(sum(1 for n in names if "/templates/" in n and not n.endswith("/")))
+          PY
+          )
+          echo "committed=$committed packaged=$packaged"
+          if [ "$committed" -ne "$packaged" ]; then
+            echo "::error::wheel is missing templates - $committed committed, $packaged packaged"
+            exit 1
+          fi
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write        # required for Trusted Publishing
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+
+      - uses: pypa/gh-action-pypi-publish@v1.14.2
