@@ -1,0 +1,73 @@
+name: smoke
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+jobs:
+  generate:
+    name: ${{ matrix.frontend }} / ${{ matrix.language }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        frontend: [react, vue]
+        language: [typescript, javascript]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install the CLI
+        run: pip install -e .
+
+      - name: Generate a project (non-interactively)
+        run: create-django-inertia smokeapp --${{ matrix.frontend }} --${{ matrix.language }} < /dev/null
+
+      - name: Install project dependencies
+        working-directory: smokeapp
+        run: |
+          pip install -r requirements.txt
+          npm install
+
+      - name: Django checks and migrations
+        working-directory: smokeapp
+        run: |
+          python manage.py check
+          python manage.py migrate
+
+      - name: The generated app's own tests
+        working-directory: smokeapp
+        run: python manage.py test
+
+      - name: Type-check
+        if: matrix.language == 'typescript'
+        working-directory: smokeapp
+        run: npm run type-check
+
+      - name: Build the frontend
+        working-directory: smokeapp
+        run: npm run build
+
+      - name: Render with DEBUG=True
+        working-directory: smokeapp
+        run: python ../scripts/smoke_render.py smokeapp dev
+
+      - name: Render with DEBUG=False
+        working-directory: smokeapp
+        run: |
+          sed -i 's/^DEBUG=True/DEBUG=False/' .env
+          python manage.py collectstatic --noinput
+          python ../scripts/smoke_render.py smokeapp prod
+
+      - name: The dev server must not serve project files
+        working-directory: smokeapp
+        run: python ../scripts/smoke_leak.py smokeapp

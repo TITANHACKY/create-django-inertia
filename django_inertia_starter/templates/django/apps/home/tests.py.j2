@@ -1,3 +1,13 @@
 from django.test import TestCase
 
-# Create your tests here.
+
+class HomeViewTests(TestCase):
+    def test_home_renders_inertia_page(self):
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'data-page')
+
+    def test_home_returns_inertia_json(self):
+        response = self.client.get('/', HTTP_X_INERTIA='true')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['component'], 'home')

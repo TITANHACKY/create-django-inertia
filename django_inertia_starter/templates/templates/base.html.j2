@@ -9,6 +9,16 @@
     
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{% raw %}{{ csrf_token }}{% endraw %}">
+
+    <!-- Apply the saved theme before first paint so the page never flashes -->
+    <script>
+        (function () {
+            var saved = localStorage.getItem('theme')
+            var dark = saved ? saved === 'dark'
+                             : window.matchMedia('(prefers-color-scheme: dark)').matches
+            document.documentElement.classList.toggle('dark', dark)
+        })()
+    </script>
     
     <!-- Inertia.js -->
     {% raw %}{{ inertia }}{% endraw %}

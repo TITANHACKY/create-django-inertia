@@ -20,16 +20,16 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
-    /* Path mapping */
+    /* Path mapping - matches the "@" alias in vite.config.ts */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
-    }{% if frontend == 'vue3' %},
+      "@/*": ["./static/*"]
+    },
 
-    /* Vue specific */
+    /* import.meta.glob and friends */
     "types": ["vite/client"]
-{% endif %}
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts"{% if frontend == 'react' %}, "src/**/*.tsx"{% endif %}{% if frontend == 'vue3' %}, "src/**/*.vue"{% endif %}],
+  "include": ["static/**/*.ts", "static/**/*.d.ts"{% if frontend == 'react' %}, "static/**/*.tsx"{% endif %}{% if frontend == 'vue3' %}, "static/**/*.vue"{% endif %}],
+  "exclude": ["static/dist"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

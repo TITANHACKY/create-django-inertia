@@ -1,5 +1,4 @@
-{% if use_typescript %}import React from 'react'
-import ThemeToggle from '@/components/ThemeToggle'
+{% if use_typescript %}import ThemeToggle from '@/components/ThemeToggle'
 
 interface HomeProps {
   message: string
@@ -9,8 +8,7 @@ interface HomeProps {
 }
 
 export default function Home({ message, project_name, frontend, typescript }: HomeProps) {
-{% else %}import React from 'react'
-import ThemeToggle from '@/components/ThemeToggle'
+{% else %}import ThemeToggle from '@/components/ThemeToggle'
 
 export default function Home({ message, project_name, frontend, typescript }) {
 {% endif %}
@@ -28,11 +26,11 @@ export default function Home({ message, project_name, frontend, typescript }) {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-accent"></span>
               </span>
-              {{ project_name }} is ready
+              {project_name} is ready
             </div>
 
             <h1 className="mb-6 text-balance font-mono text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
-              Welcome to Django + Inertia.js!
+              {message}
             </h1>
 
             <p className="mb-8 text-pretty text-lg leading-relaxed text-muted-foreground sm:text-xl">
@@ -79,7 +77,7 @@ export default function Home({ message, project_name, frontend, typescript }) {
             <div className="group rounded-lg border border-border bg-card p-6 transition-colors hover:border-accent/50">
               <div className="mb-3 flex items-center gap-3">
                 <span className="text-3xl">{% if frontend == 'react' %}⚛️{% else %}🟢{% endif %}</span>
-                <h3 className="font-mono font-semibold">{% if frontend == 'react' %}React{% else %}Vue 3{% endif %}</h3>
+                <h3 className="font-mono font-semibold">{frontend === 'react' ? 'React' : 'Vue 3'}</h3>
               </div>
               <p className="text-sm text-muted-foreground">Modern UI library</p>
             </div>
@@ -100,9 +98,9 @@ export default function Home({ message, project_name, frontend, typescript }) {
             <div className="group rounded-lg border border-border bg-card p-6 transition-colors hover:border-accent/50">
               <div className="mb-3 flex items-center gap-3">
                 <span className="text-3xl">💻</span>
-                <h3 className="font-mono font-semibold">{% if use_typescript %}TypeScript{% else %}JavaScript{% endif %}</h3>
+                <h3 className="font-mono font-semibold">{typescript ? 'TypeScript' : 'JavaScript'}</h3>
               </div>
-              <p className="text-sm text-muted-foreground">{% if use_typescript %}Type-safe development{% else %}Dynamic scripting{% endif %}</p>
+              <p className="text-sm text-muted-foreground">{typescript ? 'Type-safe development' : 'Dynamic scripting'}</p>
             </div>
             <div className="group rounded-lg border border-border bg-card p-6 transition-colors hover:border-accent/50">
               <div className="mb-3 flex items-center gap-3">

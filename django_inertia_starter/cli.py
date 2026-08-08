@@ -11,7 +11,12 @@ from . import __version__
 @click.argument("directory", required=False, default=None)
 @click.option("--react", is_flag=True, help="Use React frontend")
 @click.option("--vue", "--vue3", is_flag=True, help="Use Vue3 frontend")
-@click.option("--typescript", is_flag=True, help="Use TypeScript instead of JavaScript")
+@click.option(
+    "--typescript/--javascript",
+    "typescript",
+    default=None,
+    help="Use TypeScript or JavaScript (prompts if neither is given)",
+)
 @click.option("--force", is_flag=True, help="Overwrite existing directory")
 @click.option("--no-install", is_flag=True, help="Skip package installation prompts")
 @click.version_option(version=__version__, prog_name="create-django-inertia")

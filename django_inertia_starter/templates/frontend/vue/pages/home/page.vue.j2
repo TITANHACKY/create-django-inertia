@@ -12,11 +12,11 @@
               <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
               <span class="relative inline-flex h-2 w-2 rounded-full bg-accent"></span>
             </span>
-            {{ project_name }} is ready
+            {% raw %}{{ project_name }}{% endraw %} is ready
           </div>
 
           <h1 class="mb-6 text-balance font-mono text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
-            Welcome to Django + Inertia.js!
+            {% raw %}{{ message }}{% endraw %}
           </h1>
 
           <p class="mb-8 text-pretty text-lg leading-relaxed text-muted-foreground sm:text-xl">
@@ -63,7 +63,7 @@
           <div class="group rounded-lg border border-border bg-card p-6 transition-colors hover:border-accent/50">
             <div class="mb-3 flex items-center gap-3">
               <span class="text-3xl">{% if frontend == 'react' %}⚛️{% else %}🟢{% endif %}</span>
-              <h3 class="font-mono font-semibold">{% if frontend == 'react' %}React{% else %}Vue 3{% endif %}</h3>
+              <h3 class="font-mono font-semibold">{% raw %}{{ frontend === 'react' ? 'React' : 'Vue 3' }}{% endraw %}</h3>
             </div>
             <p class="text-sm text-muted-foreground">Modern UI library</p>
           </div>
@@ -84,9 +84,9 @@
           <div class="group rounded-lg border border-border bg-card p-6 transition-colors hover:border-accent/50">
             <div class="mb-3 flex items-center gap-3">
               <span class="text-3xl">💻</span>
-              <h3 class="font-mono font-semibold">{% if use_typescript %}TypeScript{% else %}JavaScript{% endif %}</h3>
+              <h3 class="font-mono font-semibold">{% raw %}{{ typescript ? 'TypeScript' : 'JavaScript' }}{% endraw %}</h3>
             </div>
-            <p class="text-sm text-muted-foreground">{% if use_typescript %}Type-safe development{% else %}Dynamic scripting{% endif %}</p>
+            <p class="text-sm text-muted-foreground">{% raw %}{{ typescript ? 'Type-safe development' : 'Dynamic scripting' }}{% endraw %}</p>
           </div>
           <div class="group rounded-lg border border-border bg-card p-6 transition-colors hover:border-accent/50">
             <div class="mb-3 flex items-center gap-3">

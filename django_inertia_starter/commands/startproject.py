@@ -4,13 +4,14 @@ StartProject command implementation for django-inertia-starter
 
 import click
 import os
+import shutil
 from pathlib import Path
 from ..utils.validators import (
     validate_project_name,
     validate_directory,
     normalize_project_name,
 )
-from ..utils.helpers import get_project_path, get_relative_path_for_display
+from ..utils.helpers import get_relative_path_for_display
 from ..generators.django_generator import DjangoGenerator
 from ..generators.frontend_generator import FrontendGenerator
 
@@ -98,17 +99,37 @@ def startproject_logic(
             default="react",
         )
 
-    if not typescript and not ctx.params.get("typescript"):
+    if typescript is None:
         click.echo(
             f"\n📝 Choose language for {click.style(frontend.title(), fg='cyan')}:"
         )
-        use_typescript = click.prompt(
+        typescript = click.confirm(
             click.style("Use TypeScript?", fg="blue"),
-            type=bool,
             default=True,
             show_default=True,
         )
-        typescript = use_typescript
+
+    # With --force, clear the target first so files from a previous project
+    # don't survive alongside the new one. Version control and installed
+    # dependencies are left alone - losing those to a scaffolding flag would
+    # be far worse than a stale file.
+    target_created = not project_path.exists()
+    keep = {".git", ".hg", ".svn", "node_modules", "venv", ".venv", "env"}
+    if force and project_path.exists() and any(project_path.iterdir()):
+        removed = 0
+        for entry in project_path.iterdir():
+            if entry.name in keep:
+                continue
+            if entry.is_dir() and not entry.is_symlink():
+                shutil.rmtree(entry)
+            else:
+                entry.unlink()
+            removed += 1
+        if removed:
+            click.echo(
+                f"\n🧹 Cleared {removed} existing entries from "
+                f"{click.style(str(project_path), fg='yellow')} (--force)"
+            )
 
     # Display project creation info
     click.echo(f"\n🚀 Creating Django + Inertia.js project...")
@@ -142,15 +163,20 @@ def startproject_logic(
 
     except Exception as e:
         click.echo(click.style(f"\n❌ Error creating project: {str(e)}", fg="red"))
-        # Clean up partial project on error
-        if project_path.exists():
-            import shutil
-
+        # Only remove the directory if this run created it. Deleting a
+        # directory the user already had - the '.' case especially - would
+        # take their existing work with it.
+        if target_created and project_path.exists():
             try:
                 shutil.rmtree(project_path)
                 click.echo(f"🧹 Cleaned up partial project files.")
             except Exception:
                 pass
+        elif project_path.exists():
+            click.echo(
+                "   Left the existing directory in place; remove the partial "
+                "files by hand if needed."
+            )
         return 1
 
 
@@ -233,7 +259,7 @@ def show_success_message(project_name, project_path, frontend, typescript, no_in
         click.echo("   • Add pages in static/pages/")
     else:  # vue3
         click.echo("   • Add components in static/components/")
-        click.echo("   • Add pages in static/views/")
+        click.echo("   • Add pages in static/pages/")
 
     if typescript:
         click.echo("   • TypeScript config: tsconfig.json")

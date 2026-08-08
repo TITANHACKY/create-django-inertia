@@ -8,32 +8,6 @@ import string
 from pathlib import Path
 
 
-def get_project_path(project_name, directory):
-    """
-    Determine the full project path based on project name and directory.
-
-    Examples:
-        get_project_path("myproject", ".") -> "./myproject"
-        get_project_path("myproject", "/path/to/parent") -> "/path/to/parent/myproject"
-
-    Args:
-        project_name (str): Name of the project
-        directory (str): Target directory ("." for current directory)
-
-    Returns:
-        Path: Full path where project should be created
-    """
-    directory_path = Path(directory).resolve()
-
-    # If directory is "." (current directory) or doesn't end with project name,
-    # create project folder inside it
-    if directory == "." or directory_path.name != project_name:
-        return directory_path / project_name
-    else:
-        # If the directory already has the project name, use it directly
-        return directory_path
-
-
 def generate_secret_key(length=50):
     """
     Generate a Django secret key.

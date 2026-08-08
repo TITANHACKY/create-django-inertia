@@ -1,14 +1,18 @@
-from django.shortcuts import render
 from inertia import render as inertia_render
 
 
 def home(request):
     """
-    Home page view using Inertia.js
+    Home page view.
+
+    The second argument is the page component name. The frontend resolves it
+    as static/pages/<component>/page.{% if frontend == 'vue3' %}vue{% elif use_typescript %}tsx{% else %}jsx{% endif %}, so 'home' loads
+    static/pages/home/page.{% if frontend == 'vue3' %}vue{% elif use_typescript %}tsx{% else %}jsx{% endif %}. Everything in the dict below arrives
+    in the component as props.
     """
-    return inertia_render(request, 'Home', {
+    return inertia_render(request, 'home', {
         'message': 'Welcome to Django + Inertia.js!',
         'project_name': '{{ project_name }}',
         'frontend': '{{ frontend }}',
-        'typescript': {{ use_typescript|lower }},
+        'typescript': {% if use_typescript %}True{% else %}False{% endif %},
     })

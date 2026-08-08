@@ -1,5 +1,6 @@
 import { createApp, h } from 'vue'
-import { createInertiaApp } from '@inertiajs/vue3'
+{% if use_typescript %}import type { DefineComponent } from 'vue'
+{% endif %}import { createInertiaApp } from '@inertiajs/vue3'
 import '@/css/app.css'
 
 const appName = '{{ project_name.title() }}'
@@ -7,7 +8,7 @@ const appName = '{{ project_name.title() }}'
 createInertiaApp({
   title: (title) => `${title} - ${appName}`,
   resolve: (name) => {
-    const pages = import.meta.glob('./pages/**/page.vue', { eager: true })
+    const pages = import.meta.glob{% if use_typescript %}<{ default: DefineComponent }>{% endif %}('./pages/**/page.vue', { eager: true })
     return pages[`./pages/${name}/page.vue`]
   },
   setup({ el, App, props, plugin }) {

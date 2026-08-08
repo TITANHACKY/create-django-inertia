@@ -34,6 +34,9 @@ class DjangoGenerator(BaseGenerator):
         # Generate Django project files
         self.generate_django_files()
 
+        # Generate the sample 'home' app
+        self.generate_home_app()
+
         # Generate configuration files
         self.generate_config_files()
 
@@ -47,6 +50,9 @@ class DjangoGenerator(BaseGenerator):
         directories = [
             # Main project directory
             self.project_name,
+            # Sample app
+            "home",
+            "home/migrations",
             # Templates directory
             "templates",
             # Static files
@@ -66,13 +72,33 @@ class DjangoGenerator(BaseGenerator):
             ("django/manage.py.j2", "manage.py"),
             ("django/settings.py.j2", f"{self.project_name}/settings.py"),
             ("django/urls.py.j2", f"{self.project_name}/urls.py"),
-            ("django/views.py.j2", f"{self.project_name}/views.py"),
             ("django/wsgi.py.j2", f"{self.project_name}/wsgi.py"),
             ("django/asgi.py.j2", f"{self.project_name}/asgi.py"),
             ("django/__init__.py.j2", f"{self.project_name}/__init__.py"),
         ]
 
         for template_path, output_path in django_files:
+            self.render_template(template_path, output_path, context)
+
+    def generate_home_app(self):
+        """Generate the sample 'home' app that serves the landing page"""
+        context = self.get_context()
+
+        home_files = [
+            ("django/apps/home/__init__.py.j2", "home/__init__.py"),
+            ("django/apps/home/apps.py.j2", "home/apps.py"),
+            ("django/apps/home/admin.py.j2", "home/admin.py"),
+            ("django/apps/home/models.py.j2", "home/models.py"),
+            ("django/apps/home/views.py.j2", "home/views.py"),
+            ("django/apps/home/urls.py.j2", "home/urls.py"),
+            ("django/apps/home/tests.py.j2", "home/tests.py"),
+            (
+                "django/apps/home/migrations/__init__.py.j2",
+                "home/migrations/__init__.py",
+            ),
+        ]
+
+        for template_path, output_path in home_files:
             self.render_template(template_path, output_path, context)
 
     def generate_config_files(self):
@@ -83,6 +109,8 @@ class DjangoGenerator(BaseGenerator):
             ("config/requirements.txt.j2", "requirements.txt"),
             ("config/.gitignore.j2", ".gitignore"),
             ("config/.env.example.j2", ".env.example"),
+            ("config/.env.j2", ".env"),
+            ("config/README.md.j2", "README.md"),
             ("templates/base.html.j2", "templates/base.html"),
         ]
 

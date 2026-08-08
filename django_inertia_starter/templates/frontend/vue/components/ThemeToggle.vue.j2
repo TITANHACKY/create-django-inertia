@@ -15,52 +15,36 @@
 
 {% if use_typescript %}
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 
-const theme = ref<'light' | 'dark'>('light')
-
-onMounted(() => {
-  // Check localStorage or system preference
-  const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-  const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light')
-  
-  theme.value = initialTheme
-  document.documentElement.classList.toggle('dark', initialTheme === 'dark')
-  document.documentElement.classList.toggle('light', initialTheme === 'light')
-})
+// base.html applies the saved or system theme before first paint, so read the
+// resolved value back rather than deciding it again here.
+const theme = ref<'light' | 'dark'>(
+  document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+)
 
 const toggleTheme = () => {
   const newTheme = theme.value === 'light' ? 'dark' : 'light'
   theme.value = newTheme
   localStorage.setItem('theme', newTheme)
   document.documentElement.classList.toggle('dark', newTheme === 'dark')
-  document.documentElement.classList.toggle('light', newTheme === 'light')
 }
 </script>
 {% else %}
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 
-const theme = ref('light')
-
-onMounted(() => {
-  // Check localStorage or system preference
-  const savedTheme = localStorage.getItem('theme')
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-  const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light')
-  
-  theme.value = initialTheme
-  document.documentElement.classList.toggle('dark', initialTheme === 'dark')
-  document.documentElement.classList.toggle('light', initialTheme === 'light')
-})
+// base.html applies the saved or system theme before first paint, so read the
+// resolved value back rather than deciding it again here.
+const theme = ref(
+  document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+)
 
 const toggleTheme = () => {
   const newTheme = theme.value === 'light' ? 'dark' : 'light'
   theme.value = newTheme
   localStorage.setItem('theme', newTheme)
   document.documentElement.classList.toggle('dark', newTheme === 'dark')
-  document.documentElement.classList.toggle('light', newTheme === 'light')
 }
 </script>
 {% endif %}

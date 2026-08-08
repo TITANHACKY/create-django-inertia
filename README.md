@@ -55,19 +55,24 @@ myproject/
 ├── package.json             # Frontend dependencies
 ├── vite.config.ts           # Vite configuration
 ├── tsconfig.json            # TypeScript config (if --typescript)
+├── postcss.config.mjs       # Tailwind v4 via PostCSS
+├── README.md                # Project-specific instructions
+├── .env                     # Generated SECRET_KEY (gitignored)
+├── .env.example             # Template for teammates
 ├── .gitignore
 │
 ├── myproject/               # Django project settings
 │   ├── settings.py          # Pre-configured with Inertia.js
 │   ├── urls.py
-│   ├── views.py             # Inertia.js views
 │   ├── wsgi.py
 │   └── asgi.py
 │
-├── home/                    # Django app
-│   ├── views.py             # Sample Inertia views
+├── home/                    # Sample Django app - serves the landing page
+│   ├── views.py             # Inertia view, renders the 'home' component
 │   ├── urls.py
 │   ├── models.py
+│   ├── admin.py
+│   ├── tests.py             # Passing tests for the home page
 │   └── migrations/
 │
 ├── templates/
@@ -81,6 +86,7 @@ myproject/
 │   ├── css/
 │   │   └── app.css          # Tailwind CSS with OKLCH colors
 │   ├── lib/                 # Utilities and helpers
+│   ├── dist/                # Vite build output (gitignored)
 │   └── main.tsx             # Frontend entry point
 │
 └── media/                   # User uploads
@@ -126,10 +132,14 @@ create-django-inertia PROJECT_NAME [DIRECTORY] [OPTIONS]
 
 **Options:**
 - `--react`: Use React frontend framework
-- `--vue`: Use Vue 3 frontend framework  
-- `--typescript`: Use TypeScript instead of JavaScript
-- `--force`: Overwrite existing directory  
-- `--no-install`: Skip installation prompts
+- `--vue`: Use Vue 3 frontend framework
+- `--typescript`: Use TypeScript
+- `--javascript`: Use JavaScript (without either flag, you are prompted)
+- `--force`: Clear and regenerate an existing directory. Version control
+  (`.git`), `node_modules`, and virtualenvs are preserved
+- `--no-install`: Omit the dependency steps from the printed next steps. The
+  CLI never installs packages itself - it generates files and exits
+- `--version`: Print the version
 - `--help`: Show help message
 
 **Examples:**
@@ -185,26 +195,33 @@ npm run dev
 ```
 
 ### 4. Create New Pages
-1. Add Django view in `home/views.py`:
+1. Add a Django view in `home/views.py`:
 ```python
 def about(request):
-    return inertia_render(request, 'home/about', {
+    return inertia_render(request, 'about', {
         'message': 'About our company'
     })
 ```
 
-2. Add URL route in `home/urls.py`:  
+2. Add the URL route in `home/urls.py`:
 ```python
 path('about/', views.about, name='about'),
 ```
 
-3. Create frontend component in `static/pages/home/about.tsx` (React) or `static/pages/home/about.vue` (Vue)
+3. Create the component at `static/pages/about/page.tsx` (React) or
+   `static/pages/about/page.vue` (Vue).
+
+The component name passed to `inertia_render` maps to
+`static/pages/<name>/page.<ext>`, and every value in the dict arrives as a prop.
 
 ## 🎯 What's Included
 
 ### Backend (Django)
 - ✅ Django 4.2+ with modern Python features
-- ✅ Inertia.js middleware and configuration
+- ✅ Inertia.js middleware enabled (303 redirects, asset versioning, CSRF refresh)
+- ✅ Sample `home` app with a passing test suite
+- ✅ `SECRET_KEY` generated into a gitignored `.env`, loaded via python-dotenv
+- ✅ WhiteNoise configured for production static files
 - ✅ Home app with sample Inertia views  
 - ✅ Admin interface ready
 - ✅ Static files configuration for Vite

@@ -1,25 +1,17 @@
-{% if use_typescript %}import React, { useEffect, useState } from 'react'
+{% if use_typescript %}import { useState } from 'react'
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light')
-
-  useEffect(() => {
-    // Check localStorage or system preference
-    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light')
-    
-    setTheme(initialTheme)
-    document.documentElement.classList.toggle('dark', initialTheme === 'dark')
-    document.documentElement.classList.toggle('light', initialTheme === 'light')
-  }, [])
+  // base.html applies the saved or system theme before first paint, so read the
+  // resolved value back rather than deciding it again here.
+  const [theme, setTheme] = useState<'light' | 'dark'>(() =>
+    document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+  )
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light'
     setTheme(newTheme)
     localStorage.setItem('theme', newTheme)
     document.documentElement.classList.toggle('dark', newTheme === 'dark')
-    document.documentElement.classList.toggle('light', newTheme === 'light')
   }
 
   return (
@@ -40,28 +32,20 @@ export default function ThemeToggle() {
     </button>
   )
 }
-{% else %}import React, { useEffect, useState } from 'react'
+{% else %}import { useState } from 'react'
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState('light')
-
-  useEffect(() => {
-    // Check localStorage or system preference
-    const savedTheme = localStorage.getItem('theme')
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light')
-    
-    setTheme(initialTheme)
-    document.documentElement.classList.toggle('dark', initialTheme === 'dark')
-    document.documentElement.classList.toggle('light', initialTheme === 'light')
-  }, [])
+  // base.html applies the saved or system theme before first paint, so read the
+  // resolved value back rather than deciding it again here.
+  const [theme, setTheme] = useState(() =>
+    document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+  )
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light'
     setTheme(newTheme)
     localStorage.setItem('theme', newTheme)
     document.documentElement.classList.toggle('dark', newTheme === 'dark')
-    document.documentElement.classList.toggle('light', newTheme === 'light')
   }
 
   return (

@@ -1,0 +1,80 @@
+# {{ project_name }}
+
+Django + Inertia.js + {% if frontend == 'react' %}React{% else %}Vue 3{% endif %}{% if use_typescript %} + TypeScript{% endif %}, built with Vite and Tailwind CSS.
+
+## Setup
+
+```bash
+python -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+npm install
+python manage.py migrate
+```
+
+A `.env` file with a generated `SECRET_KEY` was created for you. It is gitignored — teammates should copy `.env.example` to `.env` and generate their own.
+
+## Development
+
+Two servers, two terminals:
+
+```bash
+python manage.py runserver     # http://localhost:8000
+npm run dev                    # Vite on port 3000
+```
+
+Open http://localhost:8000. Vite is pinned to port 3000 (`strictPort`), so it fails loudly if that port is taken rather than silently moving and leaving Django pointing at the wrong place.
+
+## Adding a page
+
+1. Add a view in `home/views.py`:
+
+   ```python
+   def about(request):
+       return inertia_render(request, 'about', {'message': 'About us'})
+   ```
+
+2. Add the route in `home/urls.py`:
+
+   ```python
+   path('about/', views.about, name='about'),
+   ```
+
+3. Create `static/pages/about/page.{% if frontend == 'vue3' %}vue{% elif use_typescript %}tsx{% else %}jsx{% endif %}`.
+
+The component name in `inertia_render` maps to `static/pages/<name>/page.{% if frontend == 'vue3' %}vue{% elif use_typescript %}tsx{% else %}jsx{% endif %}`.
+
+## Layout
+
+```
+{{ project_name }}/          Django settings, root URLs, WSGI/ASGI
+home/                        Sample app — views, URLs, tests
+templates/base.html          Inertia layout, loads Vite assets
+static/                      Frontend source
+  main.{% if frontend == 'vue3' %}{% if use_typescript %}ts{% else %}js{% endif %}{% elif use_typescript %}tsx{% else %}jsx{% endif %}                   Inertia entry point
+  pages/                     Page components (one folder per route)
+  components/                Shared components
+  css/app.css                Tailwind + theme tokens
+  dist/                      Vite build output (gitignored)
+media/                       User uploads
+```
+
+## Tests
+
+```bash
+python manage.py test{% if use_typescript %}
+npm run type-check{% endif %}
+```
+
+## Production
+
+```bash
+npm run build                     # writes static/dist
+python manage.py collectstatic    # copies static/dist -> staticfiles
+```
+
+Set `DEBUG=False` and a real `ALLOWED_HOSTS` in `.env`. Static files are served by WhiteNoise; run the app under Gunicorn:
+
+```bash
+gunicorn {{ project_name }}.wsgi
+```

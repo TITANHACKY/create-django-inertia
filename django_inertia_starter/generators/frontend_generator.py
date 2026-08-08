@@ -4,6 +4,7 @@ Frontend generator for creating React/Vue frontend setup with Vite
 
 from pathlib import Path
 from .base_generator import BaseGenerator
+from ..utils.file_utils import create_file
 from ..utils.helpers import get_file_extension, get_config_extension
 
 
@@ -51,6 +52,9 @@ class FrontendGenerator(BaseGenerator):
             "static/pages",
             "static/css",
             "static/lib",
+            # Vite build output. Created up front because STATICFILES_DIRS points
+            # here, and Django warns about a missing entry before the first build.
+            "static/dist",
         ]
 
         # Framework specific directories
@@ -75,23 +79,24 @@ class FrontendGenerator(BaseGenerator):
         """Generate package.json and build configuration"""
         context = self.get_context()
 
-        # Base configuration files
+        # Base configuration files.
+        # No tailwind.config: Tailwind v4 is configured from CSS (static/css/app.css).
+        # No index.html: Django serves the page shell from templates/base.html.
         config_files = [
             ("frontend/package.json.j2", "package.json"),
             (
                 "frontend/vite.config.js.j2",
                 f'vite.config.{context["config_ext"]}',
             ),
-            ("frontend/index.html.j2", "index.html"),
             ("frontend/postcss.config.mjs.j2", "postcss.config.mjs"),
-            (
-                "frontend/tailwind.config.js.j2",
-                f'tailwind.config.{context["config_ext"]}',
-            ),
         ]
 
         for template_path, output_path in config_files:
             self.render_template(template_path, output_path, context)
+
+        # Keep static/dist in git so a fresh clone can run manage.py before
+        # the first `npm run build`.
+        create_file(self.project_path / "static" / "dist" / ".gitkeep", "")
 
     def generate_source_files(self):
         """Generate frontend source files based on framework choice"""

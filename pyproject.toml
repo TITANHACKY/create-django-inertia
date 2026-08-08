@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "create-django-inertia"
-version = "1.0.2"
+dynamic = ["version"]
 authors = [
     {name = "Django Inertia Starter Team", email = "contact@create-django-inertia.com"},
 ]
@@ -27,7 +27,6 @@ classifiers = [
     "Framework :: Django :: 4.0",
     "Framework :: Django :: 4.1",
     "Framework :: Django :: 4.2",
-    "Framework :: Django :: 5.0",
     "Operating System :: OS Independent",
 ]
 keywords = ["django", "inertia", "inertiajs", "react", "vue", "typescript", "javascript", "scaffolding", "cli", "vite", "tailwind"]
@@ -36,7 +35,6 @@ dependencies = [
     "click>=8.0.0",
     "jinja2>=3.0.0",
     "colorama>=0.4.4",
-    "requests>=2.25.0",
 ]
 
 [project.urls]
@@ -47,6 +45,9 @@ dependencies = [
 
 [project.scripts]
 create-django-inertia = "django_inertia_starter.cli:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "django_inertia_starter.__version__"}
 
 [tool.setuptools]
 packages = {find = {}}
